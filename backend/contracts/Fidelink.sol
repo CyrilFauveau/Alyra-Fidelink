@@ -68,12 +68,22 @@ contract Fidelink is ERC20, Ownable {
 
     /// @notice Override and disable default function
     function transfer(address, uint256) public pure override returns (bool) {
-        revert("Direct transfers are disabled");
+        revert("Transfer disabled");
     }
 
     /// @notice Override and disable default function
     function transferFrom(address, address, uint256) public pure override returns (bool) {
-        revert("Direct transfers are disabled");
+        revert("Transfer is disabled");
+    }
+
+    /// @notice Override and disable default function
+    function approve(address, uint256) public pure override returns (bool) {
+        revert("Approve is disabled");
+    }
+
+    /// @notice Override and disable default function
+    function allowance(address, address) public pure override returns (uint256) {
+        revert("Allowance is disabled");
     }
 
 
