@@ -36,6 +36,7 @@ contract Fidelink is ERC20, Ownable {
     mapping(address => TokenBatch[]) private tokenBatches;
 
     // ---------- Events ---------- //
+
     /// @notice Events about merchants
     event MerchantAdded(address indexed merchantAddress, string name, address indexed owner);
     event MerchantDisabled(address indexed merchantAddress, address indexed owner);
@@ -52,10 +53,12 @@ contract Fidelink is ERC20, Ownable {
 
 
     // ---------- CONSTRUCTOR ---------- //
+
     constructor() ERC20("Fidelink", "FDL") Ownable(msg.sender) {}
 
 
     // ---------- MODIFIERS ---------- //
+
     modifier onlyMerchant() {
         require(merchants[msg.sender].isActive, "Only active merchants can call this function");
         _;
@@ -81,13 +84,9 @@ contract Fidelink is ERC20, Ownable {
         revert("Approve is disabled");
     }
 
-    /// @notice Override and disable default function
-    function allowance(address, address) public pure override returns (uint256) {
-        revert("Allowance is disabled");
-    }
-
 
     // ---------- MERCHANT FUNCTIONS ---------- //
+
     function addMerchant(address _merchant, string calldata _name) external onlyOwner {
         require(!merchants[_merchant].hasBeenRegistered, "Merchant already exists");
 
@@ -120,6 +119,7 @@ contract Fidelink is ERC20, Ownable {
 
 
     // ---------- CONSUMER FUNCTIONS ---------- //
+
     function addConsumer(address _consumer) external onlyMerchant {
         require(!consumers[_consumer].hasBeenRegistered, "Consumer already exists");
 
@@ -151,8 +151,9 @@ contract Fidelink is ERC20, Ownable {
 
 
     // ---------- TOKEN FUNCTIONS ---------- //
+
     /// @notice This function allow only merchants to mint tokens for consumers
-    function mint(address _to, uint256 _amount) external onlyMerchant {
+    function mintTokens(address _to, uint256 _amount) external onlyMerchant {
         require(consumers[_to].isActive, "Consumer does not exist or is disabled");
         require(_amount > 0, "Amount must be greater than 0");
 
@@ -204,6 +205,8 @@ contract Fidelink is ERC20, Ownable {
     /// @notice This function updates customer token batches if expired
     /// @dev Currently dividing by 2 the number of token when expired
     function updateTokenBatches(address _consumer) internal {
+        require(consumers[_consumer].hasBeenRegistered, "Consumer does not exist");
+
         TokenBatch[] storage batches = tokenBatches[_consumer];
         uint256 currentTime = block.timestamp;
 
