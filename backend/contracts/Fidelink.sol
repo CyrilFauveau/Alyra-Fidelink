@@ -177,17 +177,42 @@ contract Fidelink is ERC20, Ownable {
         updateTokenBatches(msg.sender);
 
         uint256 remainingAmount = _amount;
+        uint256 transferAmount = 0;
+        uint256 ownerRedistribute = 0;
+        uint256 merchantRedistribute = 0;
         TokenBatch[] storage batches = tokenBatches[msg.sender];
 
         for (uint256 i = 0; i < batches.length && remainingAmount > 0; i++) {
             TokenBatch storage batch = batches[i];
 
-            if (batch.merchant == _to && batch.amount > 0) {
-                uint256 amountToSpend = (batch.amount >= remainingAmount) ? remainingAmount : batch.amount;
-                batch.amount -= amountToSpend;
-                remainingAmount -= amountToSpend;
+            uint256 amountToProcess = (batch.amount >= remainingAmount) ? remainingAmount : batch.amount;
+
+            if (batch.merchant == _to) {
+                // All tokens from the merchant target go to the merchant
+                transferAmount += amountToProcess;
+            } else {
+                // Redistribute tokens: 30% to owner, 20% to merchant who minted them
+                uint256 ownerShare = (amountToProcess * 30) / 100;
+                uint256 merchantShare = (amountToProcess * 20) / 100;
+
+                ownerRedistribute += ownerShare;
+                merchantRedistribute += merchantShare;
+
+                // Redistribute tokens
+                if (ownerRedistribute > 0) {
+                    _transfer(msg.sender, owner(), ownerRedistribute);
+                }
+                if (merchantRedistribute > 0) {
+                    _transfer(msg.sender, batch.merchant, merchantRedistribute);
+                }
+
+                transferAmount += amountToProcess - ownerShare - merchantShare;
             }
 
+            batch.amount -= amountToProcess;
+            remainingAmount -= amountToProcess;
+
+            // Remove empty batches
             if (batch.amount == 0) {
                 batches[i] = batches[batches.length - 1];
                 batches.pop();
@@ -195,9 +220,12 @@ contract Fidelink is ERC20, Ownable {
             }
         }
 
-        require(remainingAmount == 0, "Not enough valid tokens from this merchant");
+        require(remainingAmount == 0, "Not enough valid tokens");
 
-        _transfer(msg.sender, _to, _amount);
+        // Transfer remaining tokens to the target merchant
+        if (transferAmount > 0) {
+            _transfer(msg.sender, _to, transferAmount);
+        }
 
         emit TokenTransferred(msg.sender, _to, _amount);
     }
@@ -216,9 +244,20 @@ contract Fidelink is ERC20, Ownable {
 
             if (elapsed > EXPIRATION_DURATION) {
                 uint256 periodsElapsed = elapsed / EXPIRATION_DURATION;
+                uint256 tokensToRedistribute = batch.amount - (batch.amount / (2 ** periodsElapsed));
                 batch.amount = batch.amount / (2 ** periodsElapsed);
+
+                if (tokensToRedistribute > 0) {
+                    uint256 ownerShare = (tokensToRedistribute * 30 * 2) / 100;
+                    uint256 merchantShare = (tokensToRedistribute * 20 * 2) / 100;
+
+                    _transfer(_consumer, owner(), ownerShare);
+                    _transfer(_consumer, batch.merchant, merchantShare);
+                }
+
                 batch.timestamp += periodsElapsed * EXPIRATION_DURATION;
 
+                // Remove empty batches
                 if (batch.amount == 0) {
                     batches[i] = batches[batches.length - 1];
                     batches.pop();
