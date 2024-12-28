@@ -21,7 +21,6 @@ contract Fidelink is ERC20, Ownable {
     struct Consumer {
         bool isActive;
         bool hasBeenRegistered;
-
     }
     
     struct TokenBatch {
@@ -35,7 +34,7 @@ contract Fidelink is ERC20, Ownable {
     /// @notice Mapping to help access token informations (merchant and mint time)
     mapping(address => TokenBatch[]) private tokenBatches;
 
-    // ---------- Events ---------- //
+    // -------------------- EVENTS -------------------- //
 
     /// @notice Events about merchants
     event MerchantAdded(address indexed merchantAddress, string name, address indexed owner);
@@ -49,15 +48,20 @@ contract Fidelink is ERC20, Ownable {
 
     /// @notice Events about token operations
     event TokenMinted(address indexed merchant, address indexed consumer, uint256 amount);
-    event TokenTransferred(address indexed from, address indexed to, uint256 amount);
+    event TokenSpent(address indexed from, address indexed to, uint256 amount);
 
 
-    // ---------- CONSTRUCTOR ---------- //
+    // -------------------- CONSTRUCTOR -------------------- //
 
     constructor() ERC20("Fidelink", "FDL") Ownable(msg.sender) {}
 
 
-    // ---------- MODIFIERS ---------- //
+    // -------------------- MODIFIERS -------------------- //
+
+    modifier onlyOwnerOrMerchant() {
+        require(msg.sender == owner() || merchants[msg.sender].isActive, "Only owner or active merchants can call this function");
+        _;
+    }
 
     modifier onlyMerchant() {
         require(merchants[msg.sender].isActive, "Only active merchants can call this function");
@@ -68,6 +72,9 @@ contract Fidelink is ERC20, Ownable {
         require(consumers[msg.sender].isActive, "Only active consumers can call this function");
         _;
     }
+
+
+    // -------------------- DEFAULT FUNCTIONS -------------------- //
 
     /// @notice Override and disable default function
     function transfer(address, uint256) public pure override returns (bool) {
@@ -85,7 +92,64 @@ contract Fidelink is ERC20, Ownable {
     }
 
 
-    // ---------- MERCHANT FUNCTIONS ---------- //
+    // -------------------- GETTERS -------------------- //
+    function getBalance() external view returns (uint256 balance) {
+        return balanceOf(msg.sender);
+    }
+
+    function getBalanceByMerchant() external view onlyConsumer returns (address[] memory merchantsArray, uint256[] memory balancesArray) {
+        TokenBatch[] storage batches = tokenBatches[msg.sender];
+        address[] memory tempMerchants = new address[](batches.length);
+        uint256[] memory tempBalances = new uint256[](batches.length);
+
+        uint256 uniqueCount = 0;
+
+        for (uint256 i = 0; i < batches.length; i++) {
+            address merchant = batches[i].merchant;
+            uint256 amount = batches[i].amount;
+
+            // Check if merchant has already been added
+            bool isNewMerchant = true;
+            for (uint256 j = 0; j < uniqueCount; j++) {
+                if (tempMerchants[j] == merchant) {
+                    tempBalances[j] += amount;
+                    isNewMerchant = false;
+                    break;
+                }
+            }
+
+            // Add if new merchant
+            if (isNewMerchant) {
+                tempMerchants[uniqueCount] = merchant;
+                tempBalances[uniqueCount] = amount;
+                uniqueCount++;
+            }
+        }
+
+        // Create final arrays with unique merchants
+        merchantsArray = new address[](uniqueCount);
+        balancesArray = new uint256[](uniqueCount);
+
+        for (uint256 i = 0; i < uniqueCount; i++) {
+            merchantsArray[i] = tempMerchants[i];
+            balancesArray[i] = tempBalances[i];
+        }
+
+        return (merchantsArray, balancesArray);
+    }
+
+    function getMerchant(address _merchant) external view onlyOwner returns (Merchant memory) {
+        require(merchants[_merchant].hasBeenRegistered, "Merchant does not exist");
+        return merchants[_merchant];
+    }
+
+    function getConsumer(address _consumer) external view onlyOwnerOrMerchant returns (Consumer memory) {
+        require(consumers[_consumer].hasBeenRegistered, "Consumer does not exist");
+        return consumers[_consumer];
+    }
+
+
+    // -------------------- MERCHANT FUNCTIONS -------------------- //
 
     function addMerchant(address _merchant, string calldata _name) external onlyOwner {
         require(!merchants[_merchant].hasBeenRegistered, "Merchant already exists");
@@ -118,7 +182,7 @@ contract Fidelink is ERC20, Ownable {
     }
 
 
-    // ---------- CONSUMER FUNCTIONS ---------- //
+    // -------------------- CONSUMER FUNCTIONS -------------------- //
 
     function addConsumer(address _consumer) external onlyMerchant {
         require(!consumers[_consumer].hasBeenRegistered, "Consumer already exists");
@@ -150,9 +214,9 @@ contract Fidelink is ERC20, Ownable {
     }
 
 
-    // ---------- TOKEN FUNCTIONS ---------- //
+    // -------------------- TOKEN FUNCTIONS -------------------- //
 
-    /// @notice This function allow only merchants to mint tokens for consumers
+    /// @notice This function allows only merchants to mint tokens for consumers
     function mintTokens(address _to, uint256 _amount) external onlyMerchant {
         require(consumers[_to].isActive, "Consumer does not exist or is disabled");
         require(_amount > 0, "Amount must be greater than 0");
@@ -168,11 +232,12 @@ contract Fidelink is ERC20, Ownable {
         emit TokenMinted(msg.sender, _to, _amount);
     }
 
-    /// @notice This function allows only consumers to spend tokens only to merchants
+    /// @notice This function allows only consumers to spend tokens to merchants
     /// @dev updateTokenBatches is called before spending tokens
     function spendTokens(address _to, uint256 _amount) external onlyConsumer {
         require(merchants[_to].isActive, "Merchant does not exist or is disabled");
         require(_amount > 0, "Amount must be greater than 0");
+        require(_amount <= balanceOf(msg.sender), "You don't have enough tokens");
 
         updateTokenBatches(msg.sender);
 
@@ -211,13 +276,6 @@ contract Fidelink is ERC20, Ownable {
 
             batch.amount -= amountToProcess;
             remainingAmount -= amountToProcess;
-
-            // Remove empty batches
-            if (batch.amount == 0) {
-                batches[i] = batches[batches.length - 1];
-                batches.pop();
-                i--;
-            }
         }
 
         require(remainingAmount == 0, "Not enough valid tokens");
@@ -227,7 +285,7 @@ contract Fidelink is ERC20, Ownable {
             _transfer(msg.sender, _to, transferAmount);
         }
 
-        emit TokenTransferred(msg.sender, _to, _amount);
+        emit TokenSpent(msg.sender, _to, _amount);
     }
 
     /// @notice This function updates customer token batches if expired
@@ -256,13 +314,6 @@ contract Fidelink is ERC20, Ownable {
                 }
 
                 batch.timestamp += periodsElapsed * EXPIRATION_DURATION;
-
-                // Remove empty batches
-                if (batch.amount == 0) {
-                    batches[i] = batches[batches.length - 1];
-                    batches.pop();
-                    i--;
-                }
             }
         }
     }
