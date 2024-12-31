@@ -48,7 +48,7 @@ contract Fidelink is ERC20, Ownable {
 
     /// @notice Events about token operations
     event TokenMinted(address indexed merchant, address indexed consumer, uint256 amount);
-    event TokenSpent(address indexed from, address indexed to, uint256 amount);
+    event TokenSpent(address indexed consumer, address indexed merchant, uint256 amount);
 
 
     // -------------------- CONSTRUCTOR -------------------- //
@@ -78,7 +78,7 @@ contract Fidelink is ERC20, Ownable {
 
     /// @notice Override and disable default function
     function transfer(address, uint256) public pure override returns (bool) {
-        revert("Transfer disabled");
+        revert("Transfer is disabled");
     }
 
     /// @notice Override and disable default function
@@ -257,8 +257,8 @@ contract Fidelink is ERC20, Ownable {
                 transferAmount += amountToProcess;
             } else {
                 // Redistribute tokens: 30% to owner, 20% to merchant who minted them
-                uint256 ownerShare = (amountToProcess * 30) / 100;
-                uint256 merchantShare = (amountToProcess * 20) / 100;
+                uint256 ownerShare = (amountToProcess * 18) / 100;
+                uint256 merchantShare = (amountToProcess * 12) / 100;
 
                 ownerRedistribute += ownerShare;
                 merchantRedistribute += merchantShare;
