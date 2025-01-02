@@ -61,39 +61,41 @@ const MintTokens = () => {
 
     return (
         <>
-            <h2 className="mt-5">Mint</h2>
+            <h2 className="mt-10">Mint</h2>
 
-            <Input
-                className="mt-5"
-                placeholder="Adresse du consommateur"
-                value={consumerAddress}
-                onChange={(e) => setConsumerAddress(e.target.value)}
-            />
+            <div className="flex gap-5">
+                <Input
+                    className="mt-5 w-3/12"
+                    placeholder="Adresse du consommateur"
+                    value={consumerAddress}
+                    onChange={(e) => setConsumerAddress(e.target.value)}
+                />
 
-            <Input
-                className="mt-5"
-                placeholder="Nombre de tokens"
-                value={tokenAmount}
-                onChange={(e) => setTokenAmount(e.target.value)}
-            />
+                <Input
+                    className="mt-5 w-1/12"
+                    placeholder="Nombre de tokens"
+                    value={tokenAmount}
+                    onChange={(e) => setTokenAmount(e.target.value)}
+                />
 
-            <Button
-                className="mt-5"
-                onClick={mintTokens}
-                disabled={isPending || isConfirming}
-            >
-                {isPending || isConfirming ? "Minting..." : "Mint"}
-            </Button>
+                <Button
+                    className="mt-5"
+                    onClick={mintTokens}
+                    disabled={isPending || isConfirming}
+                >
+                    {isPending || isConfirming ? "Minting..." : "Mint"}
+                </Button>
+            </div>
 
             {error && (
-                <Alert className="mt-5">
+                <Alert className="mt-5 w-3/12">
                     <AlertTitle>Erreur</AlertTitle>
                     <AlertDescription>{error.message}</AlertDescription>
                 </Alert>
             )}
 
             {isConfirmed && (
-                <Alert className="mt-5">
+                <Alert className="mt-5 w-3/12">
                     <AlertTitle>Succès</AlertTitle>
                     <AlertDescription>Les tokens ont été minted avec succès !</AlertDescription>
                 </Alert>

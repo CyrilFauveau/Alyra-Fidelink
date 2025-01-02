@@ -1,4 +1,4 @@
-export const contractAddress = "0x3E0e97289beC05e151E97739c1833074b5ea09f1"
+export const contractAddress = "0x40F46e76A4bde39de815FeEc8dd27AC270e07f49"
 export const contractAbi = [
   {
     "inputs": [],
@@ -308,13 +308,13 @@ export const contractAbi = [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "from",
+        "name": "consumer",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "to",
+        "name": "merchant",
         "type": "address"
       },
       {
@@ -324,7 +324,7 @@ export const contractAbi = [
         "type": "uint256"
       }
     ],
-    "name": "TokenTransferred",
+    "name": "TokenSpent",
     "type": "event"
   },
   {
@@ -540,6 +540,169 @@ export const contractAbi = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBalanceByMerchant",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "merchantsArray",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "balancesArray",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_consumer",
+        "type": "address"
+      }
+    ],
+    "name": "getConsumer",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "hasBeenRegistered",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct Fidelink.Consumer",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getExpirationDuration",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getExpirationMerchantPercentage",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getExpirationOwnerPercentage",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_merchant",
+        "type": "address"
+      }
+    ],
+    "name": "getMerchant",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "hasBeenRegistered",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct Fidelink.Merchant",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRedistributionMerchantPercentage",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRedistributionOwnerPercentage",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -615,6 +778,71 @@ export const contractAbi = [
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newExpirationDuration",
+        "type": "uint256"
+      }
+    ],
+    "name": "setExpirationDuration",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newExpirationDuration",
+        "type": "uint256"
+      }
+    ],
+    "name": "setExpirationMerchantPercentage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newExpirationDuration",
+        "type": "uint256"
+      }
+    ],
+    "name": "setExpirationOwnerPercentage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newExpirationDuration",
+        "type": "uint256"
+      }
+    ],
+    "name": "setRedistributionMerchantPercentage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newExpirationDuration",
+        "type": "uint256"
+      }
+    ],
+    "name": "setRedistributionOwnerPercentage",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -23,7 +23,13 @@ const DisplayBalance = () => {
 
     return (
         <>
-            <p>Balance: {balance} {symbol}</p>
+            {
+                (balance != undefined) ? (
+                    <p>Balance: {balance.toString()} {symbol} = {(Number(balance) / 10).toFixed(2)} EUR</p>
+                ) : (
+                    <p>Impossible de récupérer la balance</p>
+                )
+            }
         </>
     );
 }

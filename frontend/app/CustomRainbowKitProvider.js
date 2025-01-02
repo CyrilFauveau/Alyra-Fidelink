@@ -2,13 +2,13 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
-import { sepolia, hardhat } from 'wagmi/chains';
+import { sepolia } from 'wagmi/chains';
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 const config = getDefaultConfig({
     appName: 'My RainbowKit App',
     projectId: 'b8a23a63eef373200d80f8f84315e935',
-    chains: [sepolia, hardhat],
+    chains: [sepolia],
     ssr: true, 
 });
 

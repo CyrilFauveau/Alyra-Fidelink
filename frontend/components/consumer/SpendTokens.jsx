@@ -63,37 +63,39 @@ const SpendTokens = () => {
         <>
             <h2 className="mt-5">Envoi de tokens</h2>
 
-            <Input
-                className="mt-5"
-                placeholder="Adresse du commerçant"
-                value={merchantAddress}
-                onChange={(e) => setMerchantAddress(e.target.value)}
-            />
+            <div className="flex gap-5">
+                <Input
+                    className="mt-5 w-3/12"
+                    placeholder="Adresse du commerçant"
+                    value={merchantAddress}
+                    onChange={(e) => setMerchantAddress(e.target.value)}
+                />
 
-            <Input
-                className="mt-5"
-                placeholder="Nombre de tokens"
-                value={tokenAmount}
-                onChange={(e) => setTokenAmount(e.target.value)}
-            />
+                <Input
+                    className="mt-5 w-1/12"
+                    placeholder="Nombre de tokens"
+                    value={tokenAmount}
+                    onChange={(e) => setTokenAmount(e.target.value)}
+                />
 
-            <Button
-                className="mt-5"
-                onClick={spendTokens}
-                disabled={isPending || isConfirming}
-            >
-                {isPending || isConfirming ? "Envoi..." : "Envoyer"}
-            </Button>
+                <Button
+                    className="mt-5"
+                    onClick={spendTokens}
+                    disabled={isPending || isConfirming}
+                >
+                    {isPending || isConfirming ? "Envoi..." : "Envoyer"}
+                </Button>
+            </div>
 
             {error && (
-                <Alert className="mt-5">
+                <Alert className="mt-5 w-3/12">
                     <AlertTitle>Erreur</AlertTitle>
                     <AlertDescription>{error.message}</AlertDescription>
                 </Alert>
             )}
 
             {isConfirmed && (
-                <Alert className="mt-5">
+                <Alert className="mt-5  w-3/12">
                     <AlertTitle>Succès</AlertTitle>
                     <AlertDescription>Les tokens ont été envoyés avec succès !</AlertDescription>
                 </Alert>

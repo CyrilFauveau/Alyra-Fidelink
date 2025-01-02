@@ -59,32 +59,34 @@ const AddConsumer = () => {
 
     return (
         <>
-            <h2 className="mt-5">Ajouter un consommateur</h2>
+            <h2 className="mt-10">Ajouter un consommateur</h2>
 
-            <Input
-                className="mt-5"
-                placeholder="Addresse du consommateur"
-                value={consumerAddress}
-                onChange={(e) => setConsumerAddress(e.target.value)}
-            />
+            <div className="flex gap-5">
+                <Input
+                    className="mt-5 w-3/12"
+                    placeholder="Addresse du consommateur"
+                    value={consumerAddress}
+                    onChange={(e) => setConsumerAddress(e.target.value)}
+                />
 
-            <Button
-                className="mt-5"
-                onClick={addConsumer}
-                disabled={isPending || isConfirming}
-            >
-                {isPending || isConfirming ? "Ajout..." : "Ajouter"}
-            </Button>
+                <Button
+                    className="mt-5"
+                    onClick={addConsumer}
+                    disabled={isPending || isConfirming}
+                >
+                    {isPending || isConfirming ? "Ajout..." : "Ajouter"}
+                </Button>
+            </div>
 
             {error && (
-                <Alert className="mt-5">
+                <Alert className="mt-5 w-3/12">
                     <AlertTitle>Erreur</AlertTitle>
                     <AlertDescription>{error.message}</AlertDescription>
                 </Alert>
             )}
 
             {isConfirmed && (
-                <Alert className="mt-5">
+                <Alert className="mt-5 w-3/12">
                     <AlertTitle>Succès</AlertTitle>
                     <AlertDescription>Le consommateur à été ajouté avec succès !</AlertDescription>
                 </Alert>

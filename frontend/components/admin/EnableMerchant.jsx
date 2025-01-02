@@ -59,32 +59,32 @@ const EnableMerchant = () => {
 
     return (
         <>
-            <h2 className="mt-5">Réactiver un commerçant</h2>
+            <div className="flex gap-5">
+                <Input
+                    className="mt-5 w-3/12"
+                    placeholder="Addresse du commerçant"
+                    value={merchantAddress}
+                    onChange={(e) => setMerchantAddress(e.target.value)}
+                />
 
-            <Input
-                className="mt-5"
-                placeholder="Addresse du commerçant"
-                value={merchantAddress}
-                onChange={(e) => setMerchantAddress(e.target.value)}
-            />
-
-            <Button
-                className="mt-5"
-                onClick={enableMerchant}
-                disabled={isPending || isConfirming}
-            >
-                {isPending || isConfirming ? "Réactivation..." : "Réactiver"}
-            </Button>
+                <Button
+                    className="mt-5"
+                    onClick={enableMerchant}
+                    disabled={isPending || isConfirming}
+                >
+                    {isPending || isConfirming ? "Réactivation..." : "Réactiver"}
+                </Button>
+            </div>
 
             {error && (
-                <Alert className="mt-5">
+                <Alert className="mt-5 w-3/12">
                     <AlertTitle>Erreur</AlertTitle>
                     <AlertDescription>{error.message}</AlertDescription>
                 </Alert>
             )}
 
             {isConfirmed && (
-                <Alert className="mt-5">
+                <Alert className="mt-5 w-3/12">
                     <AlertTitle>Succès</AlertTitle>
                     <AlertDescription>Le marchant à été réactivé avec succès !</AlertDescription>
                 </Alert>

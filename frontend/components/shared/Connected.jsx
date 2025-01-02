@@ -48,7 +48,7 @@ const Connected = () => {
       ) : (consumerData[1]) ? (
         <ConsumerLayout />
       ) : (
-        <Alert className="bg-[#F29F05]">
+        <Alert className="bg-[#ff0000] w-5/12 mt-10">
             <Terminal className="h-4 w-4" />
             <AlertTitle>Attention</AlertTitle>
             <AlertDescription>
