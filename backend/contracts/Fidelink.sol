@@ -10,7 +10,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /// @custom:experimental This is a proof of concept
 contract Fidelink is ERC20, Ownable {
 
-    uint256 private constant EXPIRATION_DURATION = 180 days;
+    uint256 private EXPIRATION_DURATION = 180 days;
+    uint256 private EXPIRATION_OWNER_PERCENTAGE = 30;
+    uint256 private EXPIRATION_MERCHANT_PERCENTAGE = 20;
+    uint256 private REDISTRIBUTION_OWNER_PERCENTAGE = 18;
+    uint256 private REDISTRIBUTION_MERCHANT_PERCENTAGE = 12;
 
     struct Merchant {
         string name;
@@ -89,6 +93,55 @@ contract Fidelink is ERC20, Ownable {
     /// @notice Override and disable default function
     function approve(address, uint256) public pure override returns (bool) {
         revert("Approve is disabled");
+    }
+
+
+    // -------------------- CONFIGURATION FUNCTIONS -------------------- //
+
+    /// @notice Expiration Duration
+    function getExpirationDuration() external view returns (uint256) {
+        return EXPIRATION_DURATION;
+    }
+
+    function setExpirationDuration(uint256 newExpirationDuration) external onlyOwner {
+        require(newExpirationDuration > 0, "Expiration duration must be greater than zero");
+        EXPIRATION_DURATION = newExpirationDuration;
+    }
+
+    /// @notice Expiration owner percentage
+    function getExpirationOwnerPercentage() external view returns (uint256) {
+        return EXPIRATION_OWNER_PERCENTAGE;
+    }
+
+    function setExpirationOwnerPercentage(uint256 newExpirationDuration) external onlyOwner {
+        EXPIRATION_OWNER_PERCENTAGE = newExpirationDuration;
+    }
+
+    /// @notice Expiration merchant percentage
+    function getExpirationMerchantPercentage() external view returns (uint256) {
+        return EXPIRATION_MERCHANT_PERCENTAGE;
+    }
+
+    function setExpirationMerchantPercentage(uint256 newExpirationDuration) external onlyOwner {
+        EXPIRATION_MERCHANT_PERCENTAGE = newExpirationDuration;
+    }
+
+    /// @notice Redistribution owner percentage
+    function getRedistributionOwnerPercentage() external view returns (uint256) {
+        return REDISTRIBUTION_OWNER_PERCENTAGE;
+    }
+
+    function setRedistributionOwnerPercentage(uint256 newExpirationDuration) external onlyOwner {
+        REDISTRIBUTION_OWNER_PERCENTAGE = newExpirationDuration;
+    }
+
+    /// @notice Redistribution merchant percentage
+    function getRedistributionMerchantPercentage() external view returns (uint256) {
+        return REDISTRIBUTION_MERCHANT_PERCENTAGE;
+    }
+
+    function setRedistributionMerchantPercentage(uint256 newExpirationDuration) external onlyOwner {
+        REDISTRIBUTION_MERCHANT_PERCENTAGE = newExpirationDuration;
     }
 
 
@@ -257,8 +310,8 @@ contract Fidelink is ERC20, Ownable {
                 transferAmount += amountToProcess;
             } else {
                 // Redistribute tokens: 30% to owner, 20% to merchant who minted them
-                uint256 ownerShare = (amountToProcess * 18) / 100;
-                uint256 merchantShare = (amountToProcess * 12) / 100;
+                uint256 ownerShare = (amountToProcess * REDISTRIBUTION_OWNER_PERCENTAGE) / 100;
+                uint256 merchantShare = (amountToProcess * REDISTRIBUTION_MERCHANT_PERCENTAGE) / 100;
 
                 ownerRedistribute += ownerShare;
                 merchantRedistribute += merchantShare;
@@ -306,8 +359,8 @@ contract Fidelink is ERC20, Ownable {
                 batch.amount = batch.amount / (2 ** periodsElapsed);
 
                 if (tokensToRedistribute > 0) {
-                    uint256 ownerShare = (tokensToRedistribute * 30 * 2) / 100;
-                    uint256 merchantShare = (tokensToRedistribute * 20 * 2) / 100;
+                    uint256 ownerShare = (tokensToRedistribute * EXPIRATION_OWNER_PERCENTAGE * 2) / 100;
+                    uint256 merchantShare = (tokensToRedistribute * EXPIRATION_MERCHANT_PERCENTAGE * 2) / 100;
 
                     _transfer(_consumer, owner(), ownerShare);
                     _transfer(_consumer, batch.merchant, merchantShare);
