@@ -60,7 +60,7 @@ const ExpirationDuration = () => {
                 <p className="content-center">EXPIRATION_DURATION: {Number(expirationDuration) / 24 / 60 / 60} jours</p>
 
                 <Input
-                    className="w-2/12"
+                    className="w-4/12"
                     placeholder="Nouvelle durée"
                     value={newExpirationDuration}
                     onChange={(e) => setNewExpirationDuration(e.target.value)}

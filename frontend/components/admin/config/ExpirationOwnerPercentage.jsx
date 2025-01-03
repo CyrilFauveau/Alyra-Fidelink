@@ -60,7 +60,7 @@ const ExpirationOwnerPercentage = () => {
                 <p className="content-center">EXPIRATION_OWNER_PERCENTAGE: {expirationOwnerPercentage}%</p>
 
                 <Input
-                    className="w-2/12"
+                    className="w-4/12"
                     placeholder="Nouveau pourcentage"
                     value={newExpirationOwnerPercentage}
                     onChange={(e) => setNewExpirationOwnerPercentage(e.target.value)}

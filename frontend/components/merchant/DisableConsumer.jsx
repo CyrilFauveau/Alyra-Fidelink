@@ -61,7 +61,7 @@ const DisableConsumer = () => {
         <>
             <div className="flex gap-5">
                 <Input
-                    className="mt-5 w-3/12"
+                    className="mt-5 w-6/12"
                     placeholder="Addresse du consommateur"
                     value={consumerAddress}
                     onChange={(e) => setConsumerAddress(e.target.value)}
@@ -77,14 +77,14 @@ const DisableConsumer = () => {
             </div>
 
             {error && (
-                <Alert className="mt-5 w-3/12">
+                <Alert className="mt-5 w-6/12">
                     <AlertTitle>Erreur</AlertTitle>
                     <AlertDescription>{error.message}</AlertDescription>
                 </Alert>
             )}
 
             {isConfirmed && (
-                <Alert className="mt-5 w-3/12">
+                <Alert className="mt-5 w-6/12">
                     <AlertTitle>Succès</AlertTitle>
                     <AlertDescription>Le consommateur à été désactivé avec succès !</AlertDescription>
                 </Alert>

@@ -60,7 +60,7 @@ const RedistributionOwnerPercentage = () => {
                 <p className="content-center">REDISTRIBUTION_OWNER_PERCENTAGE: {redistributionOwnerPercentage}%</p>
 
                 <Input
-                    className="w-2/12"
+                    className="w-4/12"
                     placeholder="Nouveau pourcentage"
                     value={newRedistributionOwnerPercentage}
                     onChange={(e) => setNewRedistributionOwnerPercentage(e.target.value)}

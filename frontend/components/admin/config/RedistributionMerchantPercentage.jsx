@@ -60,7 +60,7 @@ const RedistributionMerchantPercentage = () => {
                 <p className="content-center">REDISTRIBUTION_MERCHANT_PERCENTAGE: {redistributionMerchantPercentage}%</p>
 
                 <Input
-                    className="w-2/12"
+                    className="w-4/12"
                     placeholder="Nouveau pourcentage"
                     value={newRedistributionMerchantPercentage}
                     onChange={(e) => setNewRedistributionMerchantPercentage(e.target.value)}

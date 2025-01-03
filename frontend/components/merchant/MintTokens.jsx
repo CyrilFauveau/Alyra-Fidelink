@@ -65,14 +65,14 @@ const MintTokens = () => {
 
             <div className="flex gap-5">
                 <Input
-                    className="mt-5 w-3/12"
+                    className="mt-5 w-6/12"
                     placeholder="Adresse du consommateur"
                     value={consumerAddress}
                     onChange={(e) => setConsumerAddress(e.target.value)}
                 />
 
                 <Input
-                    className="mt-5 w-1/12"
+                    className="mt-5 w-2/12"
                     placeholder="Nombre de tokens"
                     value={tokenAmount}
                     onChange={(e) => setTokenAmount(e.target.value)}
@@ -88,14 +88,14 @@ const MintTokens = () => {
             </div>
 
             {error && (
-                <Alert className="mt-5 w-3/12">
+                <Alert className="mt-5 w-6/12">
                     <AlertTitle>Erreur</AlertTitle>
                     <AlertDescription>{error.message}</AlertDescription>
                 </Alert>
             )}
 
             {isConfirmed && (
-                <Alert className="mt-5 w-3/12">
+                <Alert className="mt-5 w-6/12">
                     <AlertTitle>Succès</AlertTitle>
                     <AlertDescription>Les tokens ont été minted avec succès !</AlertDescription>
                 </Alert>

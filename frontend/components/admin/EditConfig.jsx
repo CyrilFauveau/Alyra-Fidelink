@@ -9,7 +9,7 @@ const EditConfig = () => {
     return (
         <>
             <h2 className="mt-10 mb-5 font-bold">Configuration</h2>
-
+        
             <ExpirationDuration />
             <ExpirationOwnerPercentage />
             <ExpirationMerchantPercentage />
