@@ -1,35 +1,32 @@
 import { useState, useEffect } from "react";
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { contractAddress, contractAbi } from "@/constants";
 import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Alert, AlertDescription, AlertTitle } from "../../ui/alert";
+import { Input } from "../../ui/input";
+import { Button } from "../../ui/button";
 
-const AddConsumer = () => {
+const ExpirationDuration = () => {
 
     const { address } = useAccount();
     const { toast } = useToast();
-    const [consumerAddress, setConsumerAddress] = useState("");
 
-    const { data: hash, isPending, error, writeContract } = useWriteContract();
+    const { data: expirationDuration, isLoading, error } = useReadContract({
+        address: contractAddress,
+        abi: contractAbi,
+        functionName: "getExpirationDuration",
+    });
 
-    const addConsumer = async () => {
-        if (consumerAddress.trim() === "") {
-            toast({
-                title: "Error",
-                description: "Please use valid Ethereum address",
-                className: "bg-red-600",
-            });
-            return;
-        }
+    const [newExpirationDuration, setNewExpirationDuration] = useState("");
+    const { data: hash, isPending, isError, writeContract } = useWriteContract();
 
+    const setExpirationDuration = async () => {
         try {
             writeContract({
                 address: contractAddress,
                 abi: contractAbi,
-                functionName: "addConsumer",
-                args: [consumerAddress],
+                functionName: "setExpirationDuration",
+                args: [newExpirationDuration],
                 account: address,
             });
         } catch (e) {
@@ -50,31 +47,30 @@ const AddConsumer = () => {
         if (isConfirmed) {
             toast({
                 title: "Success",
-                description: "L'adresse ${consumerAddress} a été aouté en tant que consommateur.",
+                description: "La variable a été modifié avec succès.",
                 className: "bg-green-600",
             });
-            setConsumerAddress("");
+            setNewExpirationDuration("");
         }
     }, [isConfirmed]);
 
     return (
         <>
-            <h2 className="mt-10 font-bold">Ajouter un consommateur</h2>
+            <div className="flex gap-5 mt-2">
+                <p className="content-center">EXPIRATION_DURATION: {Number(expirationDuration) / 24 / 60 / 60} jours</p>
 
-            <div className="flex gap-5">
                 <Input
-                    className="mt-5 w-3/12"
-                    placeholder="Addresse du consommateur"
-                    value={consumerAddress}
-                    onChange={(e) => setConsumerAddress(e.target.value)}
+                    className="w-2/12"
+                    placeholder="Nouvelle durée"
+                    value={newExpirationDuration}
+                    onChange={(e) => setNewExpirationDuration(e.target.value)}
                 />
 
                 <Button
-                    className="mt-5 bg-blue-700 hover:bg-blue-600"
-                    onClick={addConsumer}
+                    onClick={setExpirationDuration}
                     disabled={isPending || isConfirming}
                 >
-                    {isPending || isConfirming ? "Ajout..." : "Ajouter"}
+                    {isPending || isConfirming ? "Modification..." : "Modifier"}
                 </Button>
             </div>
 
@@ -88,11 +84,11 @@ const AddConsumer = () => {
             {isConfirmed && (
                 <Alert className="mt-5 w-3/12">
                     <AlertTitle>Succès</AlertTitle>
-                    <AlertDescription>Le consommateur à été ajouté avec succès !</AlertDescription>
+                    <AlertDescription>La variable à été modifié avec succès !</AlertDescription>
                 </Alert>
             )}
         </>
     );
 }
 
-export default AddConsumer;
+export default ExpirationDuration;

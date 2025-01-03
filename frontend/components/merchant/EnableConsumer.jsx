@@ -68,7 +68,7 @@ const EnableConsumer = () => {
                 />
 
                 <Button
-                    className="mt-5"
+                    className="mt-5 bg-green-700 hover:bg-green-600"
                     onClick={EnableConsumer}
                     disabled={isPending || isConfirming}
                 >

@@ -61,7 +61,7 @@ const AddMerchant = () => {
 
     return (
         <>
-            <h2 className="mt-10">Ajouter un commerçant</h2>
+            <h2 className="mt-10 font-bold">Ajouter un commerçant</h2>
 
             <div className="flex gap-5">
                 <Input
@@ -79,7 +79,7 @@ const AddMerchant = () => {
                 />
 
                 <Button
-                    className="mt-5"
+                    className="mt-5 bg-blue-700 hover:bg-blue-600"
                     onClick={addMerchant}
                     disabled={isPending || isConfirming}
                 >

@@ -4,7 +4,7 @@ import DisplayBalance from "./DisplayBalance";
 const Header = () => {
   return (
     <div className="flex justify-between items-center w-full p-5">
-        <div className="text-xl ml-5">FIDELINK</div>
+        <div className="text-2xl ml-5">FIDELINK</div>
         <div className="flex justify-between items-center gap-x-5">
           <DisplayBalance />
           <ConnectButton />

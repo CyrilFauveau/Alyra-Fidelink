@@ -68,7 +68,7 @@ const DisableMerchant = () => {
                 />
 
                 <Button
-                    className="mt-5"
+                    className="mt-5 bg-red-700 hover:bg-red-600"
                     onClick={disableMerchant}
                     disabled={isPending || isConfirming}
                 >

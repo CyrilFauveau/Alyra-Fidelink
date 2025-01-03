@@ -61,7 +61,7 @@ const SpendTokens = () => {
 
     return (
         <>
-            <h2 className="mt-5">Envoi de tokens</h2>
+            <h2 className="mt-5 font-bold">Dépenser des tokens</h2>
 
             <div className="flex gap-5">
                 <Input

@@ -61,7 +61,7 @@ const MintTokens = () => {
 
     return (
         <>
-            <h2 className="mt-10">Mint</h2>
+            <h2 className="mt-10 font-bold">Envoyer des points de fidélité</h2>
 
             <div className="flex gap-5">
                 <Input
