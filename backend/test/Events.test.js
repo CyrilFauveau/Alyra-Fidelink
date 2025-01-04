@@ -1,17 +1,11 @@
 const { expect } = require("chai");
-const hre = require("hardhat");
-const { PANIC_CODES } = require("@nomicfoundation/hardhat-chai-matchers/panic");
-const { loadFixture } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
+const { setupFidelinkFixture, loadFixture } = require("./Setup.test");
 
-describe("Events", function () {
-    let owner, merchant1, merchant2, consumer;
-
-    before(async function () {
-        [owner, merchant1, merchant2, consumer] = await ethers.getSigners();
-    });
+describe("Fidelink contract", function () {
+    let owner, merchant1, consumer, fidelink;
 
     beforeEach(async function () {
-        fidelink = await ethers.deployContract("Fidelink");
+        ({ owner, merchant1, consumer, fidelink } = await loadFixture(setupFidelinkFixture));
     });
 
     describe("Merchant events", function () {

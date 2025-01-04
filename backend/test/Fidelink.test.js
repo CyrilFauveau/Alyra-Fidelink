@@ -1,18 +1,11 @@
 const { expect } = require("chai");
-const hre = require("hardhat");
-const { PANIC_CODES } = require("@nomicfoundation/hardhat-chai-matchers/panic");
-const { loadFixture, time } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
+const { setupFidelinkFixture, loadFixture, time } = require("./Setup.test");
 
 describe("Fidelink contract", function () {
-    let owner, merchant1, merchant2, consumer;
-    let expirationDuration = 180 * 24 * 60 * 60; // 180 days
-
-    before(async function () {
-        [owner, merchant1, merchant2, consumer] = await ethers.getSigners();
-    });
+    let owner, merchant1, merchant2, consumer, fidelink, expirationDuration;
 
     beforeEach(async function () {
-        fidelink = await ethers.deployContract("Fidelink");
+        ({ owner, merchant1, merchant2, consumer, fidelink, expirationDuration } = await loadFixture(setupFidelinkFixture));
     });
 
 
