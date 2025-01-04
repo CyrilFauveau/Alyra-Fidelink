@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { setupFidelinkFixture, loadFixture } = require("./Setup.test");
 
-describe("Fidelink contract", function () {
+describe("Users management", function () {
     let owner, merchant1, merchant2, consumer, fidelink;
 
     beforeEach(async function () {
